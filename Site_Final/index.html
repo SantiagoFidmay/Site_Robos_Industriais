@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Portal educativo sobre Sistemas Inteligentes com Arduino, Robótica Industrial e Sensores IoT na Indústria 4.0." />
+  <meta name="theme-color" content="#0a0f1e" />
+  <title>ISL — Intelligent Systems Lab | Arduino, Robótica & Sensores IoT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/robos.css" />
+</head>
+<body>
+
+  <!-- ===================== BARRA DE PROGRESSO ===================== -->
+  <div id="reading-progress"></div>
+
+  <!-- ===================== LOADING SCREEN ===================== -->
+  <div id="loading-screen" aria-label="Carregando sistema" role="status">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <span class="loader-bracket">[</span>
+        <span class="loader-title">ISL</span>
+        <span class="loader-bracket">]</span>
+      </div>
+      <div class="loader-status" id="loader-status">INITIALIZING SYSTEM...</div>
+      <div class="loader-bar-wrapper">
+        <div class="loader-bar" id="loader-bar"></div>
+      </div>
+      <div class="loader-percent" id="loader-percent">0%</div>
+      <div class="loader-modules" id="loader-modules">
+        <div class="loader-module" id="lm1">▸ LOADING ARDUINO MODULES</div>
+        <div class="loader-module" id="lm2">▸ LOADING SENSORS</div>
+        <div class="loader-module" id="lm3">▸ LOADING INDUSTRIAL ROBOTS</div>
+      </div>
+      <div class="loader-ready" id="loader-ready">SYSTEM READY</div>
+    </div>
+    <canvas id="loader-canvas"></canvas>
+  </div>
+
+  <!-- ===================== HEADER ===================== -->
+  <header id="main-header" role="banner">
+    <div class="header-inner">
+      <a href="#hero" class="header-logo" aria-label="Ir para o início">
+        <div class="logo-icon">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <rect x="1" y="1" width="30" height="30" rx="4" stroke="#00d4ff" stroke-width="1.5"/>
+            <path d="M8 16h4M20 16h4M16 8v4M16 20v4" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="16" cy="16" r="3" fill="#00d4ff" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-main">ISL</span>
+          <span class="logo-sub">INTELLIGENT SYSTEMS LAB</span>
+        </div>
+      </a>
+
+      <nav id="main-nav" aria-label="Navegação principal">
+        <ul class="nav-list" role="list">
+          <li><a href="#hero" class="nav-link active" data-section="hero">Início</a></li>
+          <li><a href="#desafio01" class="nav-link" data-section="desafio01">Desafios Arduino</a></li>
+          <li><a href="#robos" class="nav-link" data-section="robos">Robótica Industrial</a></li>
+          <li><a href="#conceitos-robotica" class="nav-link" data-section="conceitos-robotica">Conceitos IoT</a></li>
+          <li><a href="#sensores-iot" class="nav-link" data-section="sensores-iot">Sensores IoT</a></li>
+          <li><a href="#simulado" class="nav-link" data-section="simulado">Simulado</a></li>
+          <li><a href="#resultados" class="nav-link" data-section="resultados">Resultados</a></li>
+        </ul>
+      </nav>
+
+      <button id="hamburger" class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobile-menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Menu de navegação" aria-modal="true" hidden>
+      <div class="mobile-menu-inner">
+        <button class="mobile-close" id="mobile-close" aria-label="Fechar menu">✕</button>
+        <nav>
+          <ul class="mobile-nav-list" role="list">
+            <li><a href="#hero" class="mobile-nav-link"><span class="mnl-num">00</span>Início</a></li>
+            <li><a href="#desafio01" class="mobile-nav-link"><span class="mnl-num">01</span>Desafios Arduino</a></li>
+            <li><a href="#robos" class="mobile-nav-link"><span class="mnl-num">02</span>Robótica Industrial</a></li>
+            <li><a href="#conceitos-robotica" class="mobile-nav-link"><span class="mnl-num">03</span>Conceitos IoT</a></li>
+            <li><a href="#sensores-iot" class="mobile-nav-link"><span class="mnl-num">04</span>Sensores IoT</a></li>
+            <li><a href="#simulado" class="mobile-nav-link"><span class="mnl-num">05</span>Simulado</a></li>
+            <li><a href="#resultados" class="mobile-nav-link"><span class="mnl-num">06</span>Resultados</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main id="main-content">
+
+    <!-- ===================== HERO SECTION ===================== -->
+    <section id="hero" class="section-hero" aria-label="Apresentação principal">
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+
+      <div class="hero-content">
+        <div class="hero-text">
+          <div class="hero-badge" aria-label="Tags do projeto">
+            <span>PROJECT</span>
+            <span class="badge-sep">/</span>
+            <span>ARDUINO</span>
+            <span class="badge-sep">/</span>
+            <span>ROBOTICS</span>
+            <span class="badge-sep">/</span>
+            <span>IoT</span>
+          </div>
+          <h1 class="hero-title">
+            <span class="hero-title-line">SISTEMAS</span>
+            <span class="hero-title-line accent">INTELIGENTES</span>
+            <span class="hero-title-line">& ROBÓTICA</span>
+          </h1>
+          <p class="hero-subtitle">
+            Portal educativo completo: Arduino, Sensores IoT, Robótica Industrial e Automação na Indústria 4.0.
+          </p>
+          <div class="hero-actions">
+            <a href="#desafio01" class="btn btn-primary" id="btn-explorar">
+              <span class="btn-icon">◉</span>
+              VER DESAFIOS
+            </a>
+            <a href="#robos" class="btn btn-secondary" id="btn-robos">
+              <span class="btn-icon">▶</span>
+              CATÁLOGO DE ROBÔS
+            </a>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <span class="stat-num">05</span>
+              <span class="stat-label">Desafios</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat">
+              <span class="stat-num">07</span>
+              <span class="stat-label">Tipos Robôs</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat">
+              <span class="stat-num">25</span>
+              <span class="stat-label">Sensores IoT</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="circuit-board">
+            <div class="cb-center">
+              <div class="cb-pulse"></div>
+              <div class="cb-core">
+                <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
+                  <rect x="10" y="10" width="50" height="50" rx="8" stroke="#00d4ff" stroke-width="1.5" fill="rgba(0,212,255,0.05)"/>
+                  <rect x="20" y="20" width="30" height="30" rx="4" stroke="#00d4ff" stroke-width="1" fill="rgba(0,212,255,0.08)"/>
+                  <text x="35" y="40" text-anchor="middle" fill="#00d4ff" font-family="Orbitron" font-size="10" font-weight="700">UNO</text>
+                  <line x1="10" y1="35" x2="0" y2="35" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+                  <line x1="60" y1="35" x2="70" y2="35" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+                  <line x1="35" y1="10" x2="35" y2="0" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+                  <line x1="35" y1="60" x2="35" y2="70" stroke="#00d4ff" stroke-width="1" opacity="0.6"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="cb-nodes">
+              <div class="cb-node node-pir" data-label="PIR"><div class="node-dot"></div><span class="node-label">PIR</span></div>
+              <div class="cb-node node-ldr" data-label="LDR"><div class="node-dot"></div><span class="node-label">LDR</span></div>
+              <div class="cb-node node-ultra" data-label="ULTRASSÔNICO"><div class="node-dot"></div><span class="node-label">HC-SR04</span></div>
+              <div class="cb-node node-pot" data-label="POT"><div class="node-dot"></div><span class="node-label">POT</span></div>
+              <div class="cb-node node-dht" data-label="DHT"><div class="node-dot"></div><span class="node-label">DHT</span></div>
+              <div class="cb-node node-led" data-label="LED"><div class="node-dot node-dot-green"></div><span class="node-label">LED</span></div>
+            </div>
+
+            <svg class="cb-lines" viewBox="0 0 400 400" fill="none" aria-hidden="true">
+              <path class="circuit-path" d="M200 200 L80 80" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <path class="circuit-path" d="M200 200 L320 80" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <path class="circuit-path" d="M200 200 L60 200" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <path class="circuit-path" d="M200 200 L340 200" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <path class="circuit-path" d="M200 200 L120 330" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <path class="circuit-path" d="M200 200 L290 330" stroke="#00d4ff" stroke-width="1" opacity="0.3"/>
+              <circle cx="200" cy="200" r="60" stroke="#00d4ff" stroke-width="0.5" opacity="0.15" stroke-dasharray="4 8"/>
+              <circle cx="200" cy="200" r="110" stroke="#00d4ff" stroke-width="0.5" opacity="0.1" stroke-dasharray="2 12"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-scroll-indicator" aria-label="Role para baixo">
+        <span>SCROLL</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ===================== OVERVIEW SECTION ===================== -->
+    <section id="overview" class="section-overview reveal-section" aria-label="Visão geral do projeto">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">VISÃO GERAL</div>
+          <h2 class="section-title">O QUE VOCÊ ENCONTRARÁ AQUI</h2>
+          <p class="section-desc">Um portal completo com projetos Arduino, catálogo de robôs industriais, sensores IoT e um simulado para testar seus conhecimentos.</p>
+        </div>
+
+        <div class="overview-grid">
+          <a href="#desafio01" class="overview-card reveal-item" aria-label="Ir para Desafios Arduino">
+            <div class="oc-number">01</div>
+            <div class="oc-icon oc-icon-cyan">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <circle cx="18" cy="18" r="8" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M18 4V8M18 28V32M4 18H8M28 18H32" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="oc-title">DESAFIOS<br>ARDUINO</h3>
+            <p class="oc-chips">PIR + LDR + HC-SR04 + DHT</p>
+            <p class="oc-desc">5 sistemas desenvolvidos com Arduino explorando sensores, automação e programação.</p>
+            <div class="oc-arrow">→</div>
+          </a>
+
+          <a href="#robos" class="overview-card reveal-item" style="--card-color: #a855f7" aria-label="Ir para Robótica Industrial">
+            <div class="oc-number">02</div>
+            <div class="oc-icon oc-icon-purple">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <path d="M18 4L30 10V26L18 32L6 26V10L18 4Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                <circle cx="18" cy="18" r="5" stroke="currentColor" stroke-width="1.5"/>
+              </svg>
+            </div>
+            <h3 class="oc-title">ROBÓTICA<br>INDUSTRIAL</h3>
+            <p class="oc-chips">7 tipos de robôs + IoT</p>
+            <p class="oc-desc">Catálogo completo de robôs industriais com especificações técnicas e integração IoT.</p>
+            <div class="oc-arrow">→</div>
+          </a>
+
+          <a href="#sensores-iot" class="overview-card reveal-item" style="--card-color: #22c55e" aria-label="Ir para Sensores IoT">
+            <div class="oc-number">03</div>
+            <div class="oc-icon oc-icon-green">
+              <svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true">
+                <rect x="12" y="6" width="12" height="18" rx="6" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M24 10C26 11.5 27 13.5 27 16C27 18.5 26 20.5 24 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M12 10C10 11.5 9 13.5 9 16C9 18.5 10 20.5 12 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <h3 class="oc-title">SENSORES<br>IoT</h3>
+            <p class="oc-chips">25 sensores catalogados</p>
+            <p class="oc-desc">Catálogo técnico de sensores industriais com especificações, funcionamento e exemplos.</p>
+            <div class="oc-arrow">→</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== DESAFIO 01 ===================== -->
+    <section id="desafio01" class="section-challenge challenge-01 reveal-section" aria-label="Desafio 01 - Iluminação Inteligente">
+      <div class="challenge-bg-number" aria-hidden="true">01</div>
+      <div class="container">
+        <div class="challenge-header">
+          <div class="challenge-tag-line">
+            <div class="challenge-tag">DESAFIO 01</div>
+            <div class="challenge-system-id">SYSTEM / PRESENCE / LIGHT</div>
+          </div>
+          <h2 class="challenge-title">ILUMINAÇÃO<br><span class="accent">INTELIGENTE</span></h2>
+        </div>
+        <div class="challenge-body">
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ OBJETIVO</div>
+            <p class="block-text">Desenvolver um sistema de iluminação automática utilizando um sensor <strong>PIR</strong> para detectar presença e um sensor <strong>LDR</strong> para identificar a luminosidade do ambiente. O LED é acionado somente quando há movimento e o ambiente está escuro.</p>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ LÓGICA DE FUNCIONAMENTO</div>
+            <div class="logic-area">
+              <div class="flow-diagram">
+                <div class="flow-node flow-sensor"><div class="fn-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M10 2V5M10 15V18M2 10H5M15 10H18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div><span>SENSOR PIR</span></div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-node flow-process"><span>DETECÇÃO DE MOVIMENTO</span></div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-node flow-condition"><span>AMBIENTE ESCURO? (LDR)</span></div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-node flow-output"><div class="fn-led fn-led-yellow"></div><span>LED</span></div>
+              </div>
+              <div class="logic-condition-highlight">
+                <div class="lch-text">
+                  <span class="lch-input">MOVIMENTO + AMBIENTE ESCURO</span>
+                  <span class="lch-arrow">→</span>
+                  <span class="lch-output">LED LIGADO</span>
+                </div>
+              </div>
+              <div class="truth-table-wrapper">
+                <div class="tt-label">TABELA DE ESTADOS</div>
+                <table class="truth-table" aria-label="Tabela de estados do sistema de iluminação">
+                  <thead><tr><th>Movimento</th><th>Luminosidade</th><th>LED</th></tr></thead>
+                  <tbody>
+                    <tr><td><span class="tt-off">✕ Não</span></td><td>Claro</td><td><span class="tt-off">Desligado</span></td></tr>
+                    <tr><td><span class="tt-off">✕ Não</span></td><td>Escuro</td><td><span class="tt-off">Desligado</span></td></tr>
+                    <tr><td><span class="tt-on">✓ Sim</span></td><td>Claro</td><td><span class="tt-off">Desligado</span></td></tr>
+                    <tr class="tt-highlight"><td><span class="tt-on">✓ Sim</span></td><td>Escuro</td><td><span class="tt-active">● Ligado</span></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ DEMONSTRAÇÃO</div>
+            <div class="video-player-wrapper">
+              <div class="video-player-frame">
+                <div class="vpf-corner vpf-tl"></div><div class="vpf-corner vpf-tr"></div>
+                <div class="vpf-corner vpf-bl"></div><div class="vpf-corner vpf-br"></div>
+                <div class="vpf-header">
+                  <span class="vpf-dot vpf-red"></span><span class="vpf-dot vpf-yellow"></span><span class="vpf-dot vpf-green"></span>
+                  <span class="vpf-title">DEMO_01 — ILUMINAÇÃO INTELIGENTE</span>
+                </div>
+                <video controls preload="metadata" class="challenge-video" aria-label="Demonstração do Desafio 01">
+                  <source src="videos/1.mp4" type="video/mp4" />
+                  <p>Seu navegador não suporta vídeo. <a href="videos/1.mp4">Baixe o vídeo</a>.</p>
+                </video>
+              </div>
+            </div>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ CÓDIGO</div>
+            <div class="code-editor-wrapper" id="code-editor-01">
+              <div class="ce-header">
+                <div class="ce-dots"><span class="ce-dot" style="background:#ff5f56"></span><span class="ce-dot" style="background:#ffbd2e"></span><span class="ce-dot" style="background:#27c93f"></span></div>
+                <span class="ce-filename">desafio_01_iluminacao.ino</span>
+                <div class="ce-actions">
+                  <button class="btn-expand" data-target="code-01" aria-label="Expandir código" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>EXPANDIR</span></button>
+                  <button class="btn-copy" data-target="code-01-content" aria-label="Copiar código"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 4V2.5C10 1.67 9.33 1 8.5 1H1.5C0.67 1 0 1.67 0 2.5V9.5C0 10.33 0.67 11 1.5 11H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>COPIAR</span></button>
+                </div>
+              </div>
+              <div class="ce-body collapsed" id="code-01">
+                <pre class="ce-pre" id="code-01-content"><code class="code-arduino"><span class="c-comment">// DESAFIO 01 — ILUMINAÇÃO INTELIGENTE — PIR + LDR + LED</span>
+<span class="c-keyword">const int</span> <span class="c-var">pinoLED</span>  = <span class="c-number">13</span>;
+<span class="c-keyword">const int</span> <span class="c-var">pinoPIR</span>  = <span class="c-number">7</span>;
+<span class="c-keyword">const int</span> <span class="c-var">pinoLDR</span>  = <span class="c-number">A0</span>;
+<span class="c-keyword">const int</span> <span class="c-var">limiarLDR</span> = <span class="c-number">500</span>;
+
+<span class="c-keyword">void</span> <span class="c-fn">setup</span>() {
+  <span class="c-fn">pinMode</span>(<span class="c-var">pinoLED</span>, <span class="c-const">OUTPUT</span>);
+  <span class="c-fn">pinMode</span>(<span class="c-var">pinoPIR</span>, <span class="c-const">INPUT</span>);
+  <span class="c-fn">Serial</span>.<span class="c-fn">begin</span>(<span class="c-number">9600</span>);
+}
+
+<span class="c-keyword">void</span> <span class="c-fn">loop</span>() {
+  <span class="c-keyword">int</span> <span class="c-var">estadoPIR</span> = <span class="c-fn">digitalRead</span>(<span class="c-var">pinoPIR</span>);
+  <span class="c-keyword">int</span> <span class="c-var">valorLDR</span>  = <span class="c-fn">analogRead</span>(<span class="c-var">pinoLDR</span>);
+
+  <span class="c-keyword">if</span> (<span class="c-var">estadoPIR</span> == <span class="c-const">HIGH</span> &amp;&amp; <span class="c-var">valorLDR</span> &lt; <span class="c-var">limiarLDR</span>) {
+    <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoLED</span>, <span class="c-const">HIGH</span>);
+    <span class="c-fn">Serial</span>.<span class="c-fn">println</span>(<span class="c-string">"[ON] Movimento + Escuro → LED LIGADO"</span>);
+  } <span class="c-keyword">else</span> {
+    <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoLED</span>, <span class="c-const">LOW</span>);
+    <span class="c-fn">Serial</span>.<span class="c-fn">println</span>(<span class="c-string">"[OFF] Condição não atendida"</span>);
+  }
+  <span class="c-fn">delay</span>(<span class="c-number">200</span>);
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="transition-block" aria-hidden="true"><div class="tb-inner"><div class="tb-status"><div class="tb-dot tb-dot-complete"></div><span>SYSTEM 01 COMPLETED</span></div><div class="tb-line"><div class="tb-line-progress"></div></div><div class="tb-next"><span>NEXT MODULE</span><div class="tb-next-title">▼ DISTANCE SYSTEM</div></div></div></div>
+
+    <!-- ===================== DESAFIO 02 ===================== -->
+    <section id="desafio02" class="section-challenge challenge-02 reveal-section" aria-label="Desafio 02 - Distância e Iluminação">
+      <div class="challenge-bg-number" aria-hidden="true">02</div>
+      <div class="container">
+        <div class="challenge-header challenge-header-alt">
+          <div class="challenge-tag-line">
+            <div class="challenge-tag challenge-tag-purple">DESAFIO 02</div>
+            <div class="challenge-system-id">SYSTEM / DISTANCE / CONTROL</div>
+          </div>
+          <h2 class="challenge-title">DISTÂNCIA E<br><span class="accent-purple">ILUMINAÇÃO</span></h2>
+        </div>
+        <div class="challenge-body">
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ OBJETIVO</div>
+            <p class="block-text">Utilizar um sensor <strong>ultrassônico</strong> para medir a distância entre o sensor e um objeto. Um <strong>potenciômetro</strong> ajusta o limite de referência. O comportamento do LED é definido pela comparação entre a distância medida e o limite configurado.</p>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ DEMONSTRAÇÃO</div>
+            <div class="video-player-wrapper video-alt">
+              <div class="video-player-frame vpf-purple">
+                <div class="vpf-corner vpf-tl"></div><div class="vpf-corner vpf-tr"></div>
+                <div class="vpf-corner vpf-bl"></div><div class="vpf-corner vpf-br"></div>
+                <div class="vpf-header"><span class="vpf-dot vpf-red"></span><span class="vpf-dot vpf-yellow"></span><span class="vpf-dot vpf-green"></span><span class="vpf-title">DEMO_02 — DISTÂNCIA E ILUMINAÇÃO</span></div>
+                <video controls preload="metadata" class="challenge-video" aria-label="Demonstração do Desafio 02">
+                  <source src="videos/2.mp4" type="video/mp4" />
+                  <p>Seu navegador não suporta vídeo. <a href="videos/2.mp4">Baixe o vídeo</a>.</p>
+                </video>
+              </div>
+            </div>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ CÓDIGO</div>
+            <div class="code-editor-wrapper" id="code-editor-02">
+              <div class="ce-header">
+                <div class="ce-dots"><span class="ce-dot" style="background:#ff5f56"></span><span class="ce-dot" style="background:#ffbd2e"></span><span class="ce-dot" style="background:#27c93f"></span></div>
+                <span class="ce-filename">desafio_02_distancia.ino</span>
+                <div class="ce-actions">
+                  <button class="btn-expand" data-target="code-02" aria-label="Expandir código" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>EXPANDIR</span></button>
+                  <button class="btn-copy" data-target="code-02-content" aria-label="Copiar código"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 4V2.5C10 1.67 9.33 1 8.5 1H1.5C0.67 1 0 1.67 0 2.5V9.5C0 10.33 0.67 11 1.5 11H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>COPIAR</span></button>
+                </div>
+              </div>
+              <div class="ce-body collapsed" id="code-02">
+                <pre class="ce-pre" id="code-02-content"><code class="code-arduino"><span class="c-comment">// DESAFIO 02 — DISTÂNCIA E ILUMINAÇÃO — Ultrassônico + POT + LED</span>
+<span class="c-keyword">const int</span> <span class="c-var">pinoTrig</span> = <span class="c-number">9</span>;
+<span class="c-keyword">const int</span> <span class="c-var">pinoEcho</span> = <span class="c-number">8</span>;
+<span class="c-keyword">const int</span> <span class="c-var">pinoLED</span>  = <span class="c-number">13</span>;
+<span class="c-keyword">const int</span> <span class="c-var">pinoPOT</span>  = <span class="c-number">A0</span>;
+
+<span class="c-keyword">float</span> <span class="c-fn">medirDistancia</span>() {
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoTrig</span>, <span class="c-const">LOW</span>);  <span class="c-fn">delayMicroseconds</span>(<span class="c-number">2</span>);
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoTrig</span>, <span class="c-const">HIGH</span>); <span class="c-fn">delayMicroseconds</span>(<span class="c-number">10</span>);
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoTrig</span>, <span class="c-const">LOW</span>);
+  <span class="c-keyword">long</span> <span class="c-var">d</span> = <span class="c-fn">pulseIn</span>(<span class="c-var">pinoEcho</span>, <span class="c-const">HIGH</span>);
+  <span class="c-keyword">return</span> (<span class="c-var">d</span> * <span class="c-number">0.034</span>) / <span class="c-number">2.0</span>;
+}
+
+<span class="c-keyword">void</span> <span class="c-fn">loop</span>() {
+  <span class="c-keyword">float</span> <span class="c-var">dist</span>  = <span class="c-fn">medirDistancia</span>();
+  <span class="c-keyword">float</span> <span class="c-var">limite</span> = <span class="c-fn">map</span>(<span class="c-fn">analogRead</span>(<span class="c-var">pinoPOT</span>), <span class="c-number">0</span>, <span class="c-number">1023</span>, <span class="c-number">10</span>, <span class="c-number">100</span>);
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">pinoLED</span>, <span class="c-var">dist</span> &lt; <span class="c-var">limite</span> ? <span class="c-const">HIGH</span> : <span class="c-const">LOW</span>);
+  <span class="c-fn">delay</span>(<span class="c-number">300</span>);
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="transition-block transition-block-purple" aria-hidden="true"><div class="tb-inner"><div class="tb-status"><div class="tb-dot tb-dot-complete" style="background: var(--purple)"></div><span>SYSTEM 02 COMPLETED</span></div><div class="tb-line"><div class="tb-line-progress" style="background: linear-gradient(90deg, var(--purple), var(--green))"></div></div><div class="tb-next"><span>NEXT MODULE</span><div class="tb-next-title">▼ ENVIRONMENT SYSTEM</div></div></div></div>
+
+    <!-- ===================== DESAFIO 03 ===================== -->
+    <section id="desafio03" class="section-challenge challenge-03 reveal-section" aria-label="Desafio 03 - Ambiente Inteligente">
+      <div class="challenge-bg-number" aria-hidden="true">03</div>
+      <div class="container">
+        <div class="challenge-header">
+          <div class="challenge-tag-line">
+            <div class="challenge-tag challenge-tag-green">DESAFIO 03</div>
+            <div class="challenge-system-id">SYSTEM / TEMPERATURE / HUMIDITY</div>
+          </div>
+          <h2 class="challenge-title">AMBIENTE<br><span class="accent-green">INTELIGENTE</span></h2>
+        </div>
+        <div class="challenge-body">
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ OBJETIVO</div>
+            <p class="block-text">Desenvolver um sistema de monitoramento com sensor <strong>DHT</strong> de temperatura e umidade. As condições são representadas visualmente por LEDs indicadores: verde (normal), amarelo (umidade baixa), vermelho (temperatura alta).</p>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ DEMONSTRAÇÃO</div>
+            <div class="video-player-wrapper">
+              <div class="video-player-frame vpf-green">
+                <div class="vpf-corner vpf-tl"></div><div class="vpf-corner vpf-tr"></div>
+                <div class="vpf-corner vpf-bl"></div><div class="vpf-corner vpf-br"></div>
+                <div class="vpf-header"><span class="vpf-dot vpf-red"></span><span class="vpf-dot vpf-yellow"></span><span class="vpf-dot vpf-green"></span><span class="vpf-title">DEMO_03 — AMBIENTE INTELIGENTE</span></div>
+                <video controls preload="metadata" class="challenge-video" aria-label="Demonstração do Desafio 03">
+                  <source src="videos/3.mp4" type="video/mp4" />
+                  <p>Seu navegador não suporta vídeo. <a href="videos/3.mp4">Baixe o vídeo</a>.</p>
+                </video>
+              </div>
+            </div>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ CÓDIGO</div>
+            <div class="code-editor-wrapper" id="code-editor-03">
+              <div class="ce-header">
+                <div class="ce-dots"><span class="ce-dot" style="background:#ff5f56"></span><span class="ce-dot" style="background:#ffbd2e"></span><span class="ce-dot" style="background:#27c93f"></span></div>
+                <span class="ce-filename">desafio_03_ambiente.ino</span>
+                <div class="ce-actions">
+                  <button class="btn-expand" data-target="code-03" aria-label="Expandir código" aria-expanded="false"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 5V1H5M9 1H13V5M13 9V13H9M5 13H1V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>EXPANDIR</span></button>
+                  <button class="btn-copy" data-target="code-03-content" aria-label="Copiar código"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 4V2.5C10 1.67 9.33 1 8.5 1H1.5C0.67 1 0 1.67 0 2.5V9.5C0 10.33 0.67 11 1.5 11H4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>COPIAR</span></button>
+                </div>
+              </div>
+              <div class="ce-body collapsed" id="code-03">
+                <pre class="ce-pre" id="code-03-content"><code class="code-arduino"><span class="c-comment">// DESAFIO 03 — AMBIENTE INTELIGENTE — DHT + LEDs indicadores</span>
+<span class="c-preprocessor">#include</span> <span class="c-string">&lt;DHT.h&gt;</span>
+<span class="c-preprocessor">#define</span> <span class="c-const">PINO_DHT</span>  <span class="c-number">4</span>
+<span class="c-preprocessor">#define</span> <span class="c-const">TIPO_DHT</span>  <span class="c-const">DHT11</span>
+<span class="c-const">DHT</span> <span class="c-var">dht</span>(<span class="c-const">PINO_DHT</span>, <span class="c-const">TIPO_DHT</span>);
+
+<span class="c-keyword">const int</span> <span class="c-var">ledVerde</span>    = <span class="c-number">10</span>;
+<span class="c-keyword">const int</span> <span class="c-var">ledVermelho</span> = <span class="c-number">11</span>;
+<span class="c-keyword">const int</span> <span class="c-var">ledAmarelo</span>  = <span class="c-number">12</span>;
+<span class="c-keyword">const float</span> <span class="c-var">TEMP_MAX</span> = <span class="c-number">30.0</span>;
+<span class="c-keyword">const float</span> <span class="c-var">UMID_MIN</span> = <span class="c-number">40.0</span>;
+
+<span class="c-keyword">void</span> <span class="c-fn">loop</span>() {
+  <span class="c-keyword">float</span> <span class="c-var">t</span> = <span class="c-var">dht</span>.<span class="c-fn">readTemperature</span>();
+  <span class="c-keyword">float</span> <span class="c-var">u</span> = <span class="c-var">dht</span>.<span class="c-fn">readHumidity</span>();
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">ledVerde</span>,    (!(<span class="c-var">t</span> &gt; <span class="c-var">TEMP_MAX</span>) &amp;&amp; !(<span class="c-var">u</span> &lt; <span class="c-var">UMID_MIN</span>)) ? <span class="c-const">HIGH</span> : <span class="c-const">LOW</span>);
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">ledVermelho</span>, (<span class="c-var">t</span> &gt; <span class="c-var">TEMP_MAX</span>) ? <span class="c-const">HIGH</span> : <span class="c-const">LOW</span>);
+  <span class="c-fn">digitalWrite</span>(<span class="c-var">ledAmarelo</span>,  (<span class="c-var">u</span> &lt; <span class="c-var">UMID_MIN</span>) ? <span class="c-const">HIGH</span> : <span class="c-const">LOW</span>);
+  <span class="c-fn">delay</span>(<span class="c-number">2000</span>);
+}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="transition-block" aria-hidden="true"><div class="tb-inner"><div class="tb-status"><div class="tb-dot tb-dot-complete" style="background: var(--green)"></div><span>SYSTEM 03 COMPLETED</span></div><div class="tb-line"><div class="tb-line-progress" style="background: linear-gradient(90deg, var(--green), #ff5f56)"></div></div><div class="tb-next"><span>NEXT MODULE</span><div class="tb-next-title">▼ PRESENCE SYSTEM</div></div></div></div>
+
+    <!-- ===================== DESAFIO 04 ===================== -->
+    <section id="desafio04" class="section-challenge challenge-04 reveal-section" aria-label="Desafio 04 - Detecção de Presença PIR">
+      <div class="challenge-bg-number" aria-hidden="true">04</div>
+      <div class="container">
+        <div class="challenge-header">
+          <div class="challenge-tag-line">
+            <div class="challenge-tag" style="border-color: #ff5f56; color: #ff5f56">DESAFIO 04</div>
+            <div class="challenge-system-id">SYSTEM / PRESENCE</div>
+          </div>
+          <h2 class="challenge-title">DETECÇÃO DE PRESENÇA<br><span class="accent" style="color: #ff5f56">COM SENSOR PIR</span></h2>
+        </div>
+        <div class="challenge-body">
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ OBJETIVO E FUNCIONAMENTO</div>
+            <p class="block-text"><strong>Sistema de Detecção de Presença com Sensor PIR.</strong> O programa lê o estado do pino digital conectado ao sensor PIR. Quando detecta movimentação, o sinal é alterado para HIGH, acionando o LED como indicador visual.<br><br><strong>Componentes:</strong> Arduino Uno, sensor PIR, LED, protoboard, resistor e jumpers.<br><strong>Aplicações:</strong> Iluminação automática residencial, sistemas de alarme e controle de acesso.</p>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ DEMONSTRAÇÃO</div>
+            <div class="video-player-wrapper">
+              <div class="video-player-frame" style="border-color: #ff5f56;">
+                <div class="vpf-corner vpf-tl"></div><div class="vpf-corner vpf-tr"></div>
+                <div class="vpf-corner vpf-bl"></div><div class="vpf-corner vpf-br"></div>
+                <div class="vpf-header"><span class="vpf-dot vpf-red"></span><span class="vpf-dot vpf-yellow"></span><span class="vpf-dot vpf-green"></span><span class="vpf-title">DEMO_04 — DETECÇÃO DE PRESENÇA</span></div>
+                <video controls preload="metadata" class="challenge-video" aria-label="Demonstração do Desafio 04">
+                  <source src="videos/4.mp4" type="video/mp4" />
+                  <p>Seu navegador não suporta vídeo. <a href="videos/4.mp4">Baixe o vídeo</a>.</p>
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="transition-block" aria-hidden="true"><div class="tb-inner"><div class="tb-status"><div class="tb-dot tb-dot-complete" style="background: #ff5f56"></div><span>SYSTEM 04 COMPLETED</span></div><div class="tb-line"><div class="tb-line-progress" style="background: linear-gradient(90deg, #ff5f56, #ffbd2e)"></div></div><div class="tb-next"><span>NEXT MODULE</span><div class="tb-next-title">▼ PROXIMITY SYSTEM</div></div></div></div>
+
+    <!-- ===================== DESAFIO 05 ===================== -->
+    <section id="desafio05" class="section-challenge challenge-05 reveal-section" aria-label="Desafio 05 - Medição de Proximidade">
+      <div class="challenge-bg-number" aria-hidden="true">05</div>
+      <div class="container">
+        <div class="challenge-header">
+          <div class="challenge-tag-line">
+            <div class="challenge-tag" style="border-color: #ffbd2e; color: #ffbd2e">DESAFIO 05</div>
+            <div class="challenge-system-id">SYSTEM / PROXIMITY</div>
+          </div>
+          <h2 class="challenge-title">MEDIÇÃO DE PROXIMIDADE<br><span class="accent" style="color: #ffbd2e">COM ULTRASSÔNICO E POTENCIÔMETRO</span></h2>
+        </div>
+        <div class="challenge-body">
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ OBJETIVO E FUNCIONAMENTO</div>
+            <p class="block-text"><strong>Sistema de Medição de Proximidade com Sensor Ultrassônico e Potenciômetro.</strong> O sensor ultrassônico calcula a distância enviando um pulso sonoro pelo pino Trig e cronometrando o retorno pelo pino Echo. O potenciômetro permite calibrar o limiar de acionamento.<br><br><strong>Aplicações Práticas:</strong> Sensores de estacionamento veicular, detecção de obstáculos em robótica e monitoramento de níveis em reservatórios.</p>
+          </div>
+          <div class="challenge-block reveal-item">
+            <div class="block-label">▸ DEMONSTRAÇÃO</div>
+            <div class="video-player-wrapper">
+              <div class="video-player-frame" style="border-color: #ffbd2e;">
+                <div class="vpf-corner vpf-tl"></div><div class="vpf-corner vpf-tr"></div>
+                <div class="vpf-corner vpf-bl"></div><div class="vpf-corner vpf-br"></div>
+                <div class="vpf-header"><span class="vpf-dot vpf-red"></span><span class="vpf-dot vpf-yellow"></span><span class="vpf-dot vpf-green"></span><span class="vpf-title">DEMO_05 — MEDIÇÃO DE PROXIMIDADE</span></div>
+                <video controls preload="metadata" class="challenge-video" aria-label="Demonstração do Desafio 05">
+                  <source src="videos/5.mp4" type="video/mp4" />
+                  <p>Seu navegador não suporta vídeo. <a href="videos/5.mp4">Baixe o vídeo</a>.</p>
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== ROBÓTICA INDUSTRIAL ===================== -->
+    <section id="robos" class="section-robos reveal-section" aria-label="Catálogo de Robôs Industriais">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">CATÁLOGO</div>
+          <h2 class="section-title">ROBÔS INDUSTRIAIS</h2>
+          <p class="section-desc">Conheça os 7 principais tipos de robôs utilizados na indústria moderna. Clique em cada modelo para explorar suas características técnicas, aplicações e integração com IoT.</p>
+        </div>
+
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="robot-search" placeholder="Buscar robôs por nome, tipo ou aplicação...">
+        </div>
+
+        <div class="robots-nav">
+          <button class="robot-tab active" data-filter="todos">Todos</button>
+          <button class="robot-tab" data-filter="cartesiano">📐 Cartesiano</button>
+          <button class="robot-tab" data-filter="scara">🔄 SCARA</button>
+          <button class="robot-tab" data-filter="articulado">🦾 Articulado</button>
+          <button class="robot-tab" data-filter="cilindrico">🔧 Cilíndrico</button>
+          <button class="robot-tab" data-filter="delta">🕷️ Delta</button>
+          <button class="robot-tab" data-filter="polar">🌐 Polar</button>
+          <button class="robot-tab" data-filter="colaborativo">🤝 Colaborativo</button>
+        </div>
+
+        <div class="robots-grid" id="robots-grid"></div>
+      </div>
+    </section>
+
+    <!-- Modal Robôs -->
+    <div class="modal-overlay" id="robot-modal">
+      <div class="modal-content" id="modal-inner">
+        <button class="modal-close" id="modal-close" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+
+    <!-- ===================== CONCEITOS IoT & ROBÓTICA ===================== -->
+    <section id="conceitos-robotica" class="section-conceitos reveal-section" aria-label="Conceitos de IoT e Robótica Industrial">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">FUNDAMENTOS</div>
+          <h2 class="section-title">CONCEITOS — IoT & ROBÓTICA INDUSTRIAL</h2>
+          <p class="section-desc">Compreenda os pilares que sustentam a revolução industrial moderna e como robótica e IoT se integram na Indústria 4.0.</p>
+        </div>
+        <div class="concepts-grid">
+          <div class="concept-card">
+            <h3>Internet das Coisas (IoT)</h3>
+            <p>A IoT refere-se à interconexão digital de objetos físicos com a internet por meio de sensores, atuadores e softwares embarcados. No contexto industrial (IIoT), máquinas e robôs coletam e compartilham dados em tempo real via protocolos como MQTT, OPC UA e AMQP.</p>
+          </div>
+          <div class="concept-card">
+            <h3>Robótica Industrial</h3>
+            <p>Ramo da engenharia que envolve o projeto e aplicação de robôs em ambientes de manufatura. Segundo a ISO 8373:2012, um robô industrial é um manipulador multipropósito, reprogramável em três ou mais eixos, que executa tarefas como soldagem, montagem e inspeção com alta precisão 24h/dia.</p>
+          </div>
+          <div class="concept-card">
+            <h3>Importância da Automação</h3>
+            <p>A automação industrial proporciona: aumento de produtividade (24/7), melhoria de qualidade, redução de custos, maior segurança dos trabalhadores, flexibilidade de produção e rastreabilidade completa. Na Indústria 4.0, combina robótica, IA e IoT para fábricas autônomas.</p>
+          </div>
+          <div class="concept-card">
+            <h3>Robótica & IoT: Convergência</h3>
+            <p>A convergência cria sistemas ciberfísicos onde robôs são nós inteligentes em rede. Sensores IoT coletam dados de vibração, temperatura e performance enviando para a nuvem. Isso permite Digital Twins, manutenção preditiva por machine learning e controle remoto via nuvem.</p>
+          </div>
+          <div class="concept-card">
+            <h3>Arduino e Prototipagem IoT</h3>
+            <p>Plataforma open-source baseada em microcontroladores que leem inputs de sensores e executam lógica programada em C/C++. É vastamente utilizada para validar projetos IoT e de automação, suportando dezenas de bibliotecas para quase todos os sensores do mercado.</p>
+          </div>
+          <div class="concept-card">
+            <h3>Sensores na Automação</h3>
+            <p>Sensores são os "sentidos" da fábrica inteligente. O fluxo da automação começa no sensor (aquisição), viaja através de protocolos de comunicação (I2C, SPI, UART, MQTT) e chega ao controlador, que processa e atua no sistema — pilar da IoT que conecta o mundo físico ao digital.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TIMELINE INDÚSTRIA 4.0 ===================== -->
+    <section id="timeline" class="section-timeline reveal-section" aria-label="Timeline da Indústria 4.0">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">EVOLUÇÃO</div>
+          <h2 class="section-title">IoT & ROBÓTICA NA INDÚSTRIA 4.0</h2>
+          <p class="section-desc">A jornada da integração entre robótica industrial e Internet das Coisas ao longo das revoluções industriais.</p>
+        </div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>Indústria 1.0 — Mecanização (1784)</h4>
+              <p>Introdução de máquinas a vapor e mecanização da produção. O tear mecânico revoluciona a indústria têxtil e a produção manual dá lugar às primeiras fábricas.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>Indústria 2.0 — Eletrificação (1870)</h4>
+              <p>Produção em massa habilitada pela energia elétrica. Linhas de montagem de Henry Ford e surgimento dos primeiros sistemas de controle elétrico nas fábricas.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content">
+              <h4>Unimate — Primeiro Robô Industrial (1961)</h4>
+              <p>Criado por George Devol e Joseph Engelberger, instalado na linha da General Motors. Robô de coordenadas polares que manuseava peças fundidas a 150°C — nascimento da robótica industrial.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--purple); box-shadow: 0 0 10px rgba(168,85,247,0.5)"></div>
+            <div class="timeline-content">
+              <h4>Indústria 3.0 — Automação Digital (1969)</h4>
+              <p>Introdução de CLPs, computadores industriais e sistemas SCADA. Robôs ganham controladores digitais. Surgimento do SCARA (1981), robôs Delta (1985) e sensores inteligentes.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: var(--green); box-shadow: 0 0 10px rgba(34,197,94,0.5)"></div>
+            <div class="timeline-content">
+              <h4>IoT Industrial — IIoT (2010s)</h4>
+              <p>Sensores conectados, protocolos MQTT e OPC UA, e plataformas de nuvem industrial (AWS IoT, Azure IoT, MindSphere) permitem que máquinas e robôs compartilhem dados em tempo real.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="background: #fbbf24; box-shadow: 0 0 10px rgba(251,191,36,0.5)"></div>
+            <div class="timeline-content">
+              <h4>Indústria 4.0 — Fábricas Inteligentes (Hoje)</h4>
+              <p>Convergência de robótica avançada, IoT, inteligência artificial, gêmeos digitais e edge computing. Cobots trabalham lado a lado com humanos. Produção autônoma, flexível e altamente personalizada.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SENSORES IoT ===================== -->
+    <section id="sensores-iot" class="section-sensores reveal-section" aria-label="Catálogo de Sensores IoT">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">CATÁLOGO DE SENSORES</div>
+          <h2 class="section-title">SENSORES IoT INDUSTRIAIS</h2>
+          <p class="section-desc">Conheça 25 dos principais sensores utilizados em automação e desenvolvimento de sistemas IoT. Clique em cada sensor para ver suas especificações técnicas completas.</p>
+        </div>
+
+        <div class="search-wrapper">
+          <span class="search-icon">🔍</span>
+          <input type="text" class="search-input" id="sensor-search" placeholder="Buscar sensor por nome, categoria ou aplicação...">
+        </div>
+
+        <div class="robots-nav" id="sensor-categories-nav"></div>
+        <div class="robots-grid" id="sensors-grid"></div>
+      </div>
+    </section>
+
+    <!-- Modal Sensores -->
+    <div class="modal-overlay" id="sensor-modal">
+      <div class="modal-content" id="sensor-modal-inner">
+        <button class="modal-close" onclick="closeSensorModal()" aria-label="Fechar">✕</button>
+      </div>
+    </div>
+
+    <!-- ===================== RESULTADOS ===================== -->
+    <section id="resultados" class="section-results reveal-section" aria-label="Resultados do projeto">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">ANÁLISE FINAL</div>
+          <h2 class="section-title">RESULTADOS DO PROJETO</h2>
+        </div>
+        <div class="results-layout">
+          <div class="results-timeline">
+            <div class="rt-item reveal-item">
+              <div class="rt-node rt-node-01"><span>01</span></div>
+              <div class="rt-content"><div class="rt-title">ILUMINAÇÃO INTELIGENTE</div><div class="rt-tags"><span class="rt-tag">PIR</span><span class="rt-tag">LDR</span><span class="rt-tag">LED</span></div></div>
+            </div>
+            <div class="rt-connector" aria-hidden="true"><div class="rt-connector-line"></div></div>
+            <div class="rt-item reveal-item">
+              <div class="rt-node rt-node-02"><span>02</span></div>
+              <div class="rt-content"><div class="rt-title">DISTÂNCIA E ILUMINAÇÃO</div><div class="rt-tags"><span class="rt-tag" style="border-color: var(--purple); color: var(--purple)">HC-SR04</span><span class="rt-tag" style="border-color: var(--purple); color: var(--purple)">POT</span></div></div>
+            </div>
+            <div class="rt-connector" aria-hidden="true"><div class="rt-connector-line" style="background: var(--green)"></div></div>
+            <div class="rt-item reveal-item">
+              <div class="rt-node rt-node-03"><span>03</span></div>
+              <div class="rt-content"><div class="rt-title">AMBIENTE INTELIGENTE</div><div class="rt-tags"><span class="rt-tag" style="border-color: var(--green); color: var(--green)">DHT</span><span class="rt-tag" style="border-color: var(--green); color: var(--green)">LEDs</span></div></div>
+            </div>
+          </div>
+          <div class="results-info">
+            <div class="ri-panel reveal-item">
+              <div class="rip-header"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="4" stroke="#00d4ff" stroke-width="1.5"/><path d="M9 1V4M9 14V17M1 9H4M14 9H17" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg>SENSORES UTILIZADOS</div>
+              <ul class="rip-list">
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Sensor PIR</li>
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Sensor LDR</li>
+                <li><span class="rip-dot" style="background:#a855f7"></span>Sensor Ultrassônico (HC-SR04)</li>
+                <li><span class="rip-dot" style="background:#a855f7"></span>Potenciômetro</li>
+                <li><span class="rip-dot" style="background:#22c55e"></span>Sensor DHT (Temp. e Umidade)</li>
+              </ul>
+            </div>
+            <div class="ri-panel reveal-item">
+              <div class="rip-header"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2" stroke="#00d4ff" stroke-width="1.5"/><path d="M5 9H13M9 5V13" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round"/></svg>CONCEITOS TRABALHADOS</div>
+              <ul class="rip-list">
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Leitura de sensores digitais e analógicos</li>
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Estruturas condicionais</li>
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Controle de LEDs e atuadores</li>
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Automação e IoT</li>
+                <li><span class="rip-dot" style="background:#00d4ff"></span>Robótica Industrial</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== SIMULADO ===================== -->
+    <section id="simulado" class="section-simulado" aria-labelledby="simulado-title">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">TESTE SEUS CONHECIMENTOS</div>
+          <h2 id="simulado-title" class="section-title">SIMULADO</h2>
+          <p class="section-desc">11 questões sobre banco de dados, robótica, sensores, multímetro, Arduino, ESP e programação. Escolha uma alternativa por questão e finalize para conferir sua pontuação e o gabarito.</p>
+        </div>
+        <noscript>Ative o JavaScript para corrigir as respostas e visualizar sua pontuação.</noscript>
+        <form id="simulado-form">
+          <div class="simulado-progress">
+            <label for="simulado-progress">Progresso: <span id="simulado-count" aria-live="polite">0 de 11 respondidas</span></label>
+            <progress id="simulado-progress" max="11" value="0">0 de 11</progress>
+          </div>
+          <fieldset class="simulado-question"><legend>1. Banco de Dados — Modelos conceitual, lógico e físico</legend><div class="simulado-statement"><p>Uma escola está desenvolvendo um sistema para controlar o empréstimo de livros da biblioteca. Durante o planejamento, a equipe realizou três etapas:</p><p>I. Identificou entidades como Aluno, Livro e Empréstimo, estabelecendo os relacionamentos entre elas.</p><p>II. Transformou essas entidades em tabelas, definindo atributos, chaves primárias e chaves estrangeiras.</p><p>III. Implementou as tabelas em um SGBD, especificando tipos de dados, índices e outros detalhes necessários ao armazenamento.</p><p>A sequência apresentada corresponde, respectivamente, aos modelos</p></div><label class="simulado-option"><input type="radio" name="questao-1" value="A" required><span><strong>A)</strong> físico, conceitual e lógico.</span></label><label class="simulado-option"><input type="radio" name="questao-1" value="B" required><span><strong>B)</strong> conceitual, lógico e físico.</span></label><label class="simulado-option"><input type="radio" name="questao-1" value="C" required><span><strong>C)</strong> lógico, físico e conceitual.</span></label><label class="simulado-option"><input type="radio" name="questao-1" value="D" required><span><strong>D)</strong> conceitual, físico e lógico.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>2. Robótica — Componentes e funcionamento</legend><div class="simulado-statement"><p>Durante a montagem de um robô móvel, um grupo de estudantes programou o equipamento para se deslocar e mudar sua trajetória sempre que encontrar um obstáculo. O robô possui um sensor ultrassônico, uma placa microcontroladora e motores elétricos.</p><p>A função de cada componente é corretamente descrita em:</p></div><label class="simulado-option"><input type="radio" name="questao-2" value="A" required><span><strong>A)</strong> O sensor processa todo o programa, enquanto a placa apenas fornece energia aos motores.</span></label><label class="simulado-option"><input type="radio" name="questao-2" value="B" required><span><strong>B)</strong> Os motores identificam os obstáculos, o sensor determina a direção e a placa armazena a energia.</span></label><label class="simulado-option"><input type="radio" name="questao-2" value="C" required><span><strong>C)</strong> O sensor coleta informações do ambiente, a placa processa e os motores executam o movimento.</span></label><label class="simulado-option"><input type="radio" name="questao-2" value="D" required><span><strong>D)</strong> A placa detecta fisicamente os obstáculos, enquanto o sensor controla a velocidade dos motores.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>3. Sensores — Sensor de luminosidade</legend><div class="simulado-statement"><p>Um sistema de iluminação automática usa um sensor LDR. A condição programada é:</p><pre class="simulado-code"><code>if (luminosidade &lt; 400) {
+    digitalWrite(led, HIGH);
+} else {
+    digitalWrite(led, LOW);
+}</code></pre><p>O sensor apresentou inicialmente 310 e depois 720. O comportamento esperado do LED será</p></div><label class="simulado-option"><input type="radio" name="questao-3" value="A" required><span><strong>A)</strong> permanecer apagado nas duas situações.</span></label><label class="simulado-option"><input type="radio" name="questao-3" value="B" required><span><strong>B)</strong> acender com 310 e apagar quando passar para 720.</span></label><label class="simulado-option"><input type="radio" name="questao-3" value="C" required><span><strong>C)</strong> apagar com 310 e acender quando passar para 720.</span></label><label class="simulado-option"><input type="radio" name="questao-3" value="D" required><span><strong>D)</strong> permanecer aceso nas duas situações.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>4. Sensores — Estacionamento inteligente</legend><div class="simulado-statement"><p>Um grupo desenvolveu um protótipo de estacionamento inteligente para detectar a aproximação de veículos. O componente mais adequado para obter a informação necessária é o</p></div><label class="simulado-option"><input type="radio" name="questao-4" value="A" required><span><strong>A)</strong> sensor de temperatura, pois alterações térmicas permitem calcular a distância.</span></label><label class="simulado-option"><input type="radio" name="questao-4" value="B" required><span><strong>B)</strong> sensor de luminosidade, pois a intensidade da luz determina a posição do veículo.</span></label><label class="simulado-option"><input type="radio" name="questao-4" value="C" required><span><strong>C)</strong> sensor ultrassônico, pois utiliza emissão e retorno de ondas para estimar a distância até um objeto.</span></label><label class="simulado-option"><input type="radio" name="questao-4" value="D" required><span><strong>D)</strong> sensor de umidade, pois a variação do ar permite identificar a proximidade de objetos sólidos.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>5. Multímetro — Procedimento de medição</legend><div class="simulado-statement"><p>Um estudante precisa verificar se uma fonte fornece aproximadamente 5V em corrente contínua. O procedimento mais adequado é</p></div><label class="simulado-option"><input type="radio" name="questao-5" value="A" required><span><strong>A)</strong> selecionar medição de corrente contínua e conectar o multímetro em paralelo.</span></label><label class="simulado-option"><input type="radio" name="questao-5" value="B" required><span><strong>B)</strong> selecionar tensão contínua em escala compatível e conectar as pontas de prova em paralelo com os pontos medidos.</span></label><label class="simulado-option"><input type="radio" name="questao-5" value="C" required><span><strong>C)</strong> selecionar resistência e conectar o multímetro em série.</span></label><label class="simulado-option"><input type="radio" name="questao-5" value="D" required><span><strong>D)</strong> selecionar tensão alternada e conectar o equipamento em série.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>6. Arduino — Entradas digitais e analógicas</legend><div class="simulado-statement"><p>Em um projeto, dois dispositivos serão conectados a um Arduino: um botão (apenas pressionado/não pressionado) e um sensor de luminosidade (diferentes níveis de sinal). A configuração mais coerente é utilizar</p></div><label class="simulado-option"><input type="radio" name="questao-6" value="A" required><span><strong>A)</strong> entrada analógica para o botão e saída digital para o sensor de luminosidade.</span></label><label class="simulado-option"><input type="radio" name="questao-6" value="B" required><span><strong>B)</strong> saída digital para o botão e entrada digital para o sensor de luminosidade.</span></label><label class="simulado-option"><input type="radio" name="questao-6" value="C" required><span><strong>C)</strong> entrada digital para o botão e entrada analógica para o sensor de luminosidade.</span></label><label class="simulado-option"><input type="radio" name="questao-6" value="D" required><span><strong>D)</strong> entrada analógica para ambos.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>7. Arduino — PWM</legend><div class="simulado-statement"><p>Um estudante quer controlar o brilho de um LED com diferentes níveis de intensidade. Utilizando Arduino, uma solução adequada é</p></div><label class="simulado-option"><input type="radio" name="questao-7" value="A" required><span><strong>A)</strong> utilizar uma porta compatível com PWM e variar o valor enviado por meio de analogWrite().</span></label><label class="simulado-option"><input type="radio" name="questao-7" value="B" required><span><strong>B)</strong> utilizar obrigatoriamente uma entrada analógica e executar digitalRead() com valores entre 0 e 1023.</span></label><label class="simulado-option"><input type="radio" name="questao-7" value="C" required><span><strong>C)</strong> utilizar uma porta digital comum e aumentar a tensão via digitalWrite().</span></label><label class="simulado-option"><input type="radio" name="questao-7" value="D" required><span><strong>D)</strong> utilizar analogRead() na porta do LED.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>8. ESP32/ESP8266 — Internet das Coisas</legend><div class="simulado-statement"><p>Uma equipe cria um sistema de monitoramento ambiental com sensores que enviam dados via rede sem fio para uma aplicação web. Elas consideram usar uma placa ESP principalmente porque essas placas</p></div><label class="simulado-option"><input type="radio" name="questao-8" value="A" required><span><strong>A)</strong> possuem recursos de comunicação sem fio integrados, facilitando projetos de Internet das Coisas.</span></label><label class="simulado-option"><input type="radio" name="questao-8" value="B" required><span><strong>B)</strong> funcionam exclusivamente como sensores e não necessitam executar programas.</span></label><label class="simulado-option"><input type="radio" name="questao-8" value="C" required><span><strong>C)</strong> substituem qualquer sensor, pois medem diretamente temperatura, distância e luz.</span></label><label class="simulado-option"><input type="radio" name="questao-8" value="D" required><span><strong>D)</strong> são usadas somente para aumentar a memória de um Arduino.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>9. Programação — Interpretação de código Arduino</legend><div class="simulado-statement"><p>Observe o código para controlar um LED:</p><pre class="simulado-code"><code>int led = 8;
+int botao = 2;
+void setup() { pinMode(led, OUTPUT); pinMode(botao, INPUT); }
+void loop() {
+    if (digitalRead(botao) == HIGH) { digitalWrite(led, HIGH); }
+    else { digitalWrite(led, LOW); }
+}</code></pre><p>Quando o botão apresentar estado HIGH, o Arduino deverá</p></div><label class="simulado-option"><input type="radio" name="questao-9" value="A" required><span><strong>A)</strong> ler a porta do LED e transformar seu valor em entrada analógica.</span></label><label class="simulado-option"><input type="radio" name="questao-9" value="B" required><span><strong>B)</strong> ligar o LED, pois a condição do if será verdadeira e a saída receberá HIGH.</span></label><label class="simulado-option"><input type="radio" name="questao-9" value="C" required><span><strong>C)</strong> desligar o LED, pois a entrada HIGH faz executar obrigatoriamente o bloco else.</span></label><label class="simulado-option"><input type="radio" name="questao-9" value="D" required><span><strong>D)</strong> gerar um erro, pois digitalRead() não pode ser usado dentro de if.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>10. Programação — Identificação de erro</legend><div class="simulado-statement"><p>Um aluno desenvolveu este código:</p><pre class="simulado-code"><code>let nota = 8;
+if (nota = 10) { console.log("Nota máxima"); }
+else { console.log("Nota diferente de 10"); }</code></pre><p>O resultado não corresponde à intenção de comparar nota com 10. Para corrigir mantendo a lógica, deve-se</p></div><label class="simulado-option"><input type="radio" name="questao-10" value="A" required><span><strong>A)</strong> substituir nota = 10 por uma comparação, como nota === 10.</span></label><label class="simulado-option"><input type="radio" name="questao-10" value="B" required><span><strong>B)</strong> substituir if por for.</span></label><label class="simulado-option"><input type="radio" name="questao-10" value="C" required><span><strong>C)</strong> substituir console.log() por return.</span></label><label class="simulado-option"><input type="radio" name="questao-10" value="D" required><span><strong>D)</strong> declarar nota como texto ("8").</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <fieldset class="simulado-question"><legend>11. Programação — Análise de repetição e vetor</legend><div class="simulado-statement"><p>Uma aplicação precisa mostrar todos os valores de um vetor:</p><pre class="simulado-code"><code>let valores = [10, 20, 30, 40];
+for (let i = 0; i &lt;= valores.length; i++) {
+    console.log(valores[i]);
+}</code></pre><p>São mostrados os 4 números esperados, mas também aparece undefined. O problema ocorre porque</p></div><label class="simulado-option"><input type="radio" name="questao-11" value="A" required><span><strong>A)</strong> os vetores começam na posição 1, enquanto o programa iniciou pela posição 0.</span></label><label class="simulado-option"><input type="radio" name="questao-11" value="B" required><span><strong>B)</strong> valores.length retorna o último índice do vetor.</span></label><label class="simulado-option"><input type="radio" name="questao-11" value="C" required><span><strong>C)</strong> a condição i &lt;= valores.length permite uma repetição além do último índice válido. Usar i &lt; valores.length seria o correto.</span></label><label class="simulado-option"><input type="radio" name="questao-11" value="D" required><span><strong>D)</strong> o incremento i++ faz o programa aumentar duas posições a cada repetição.</span></label><p class="simulado-feedback" hidden></p></fieldset>
+          <div id="simulado-result" class="simulado-result" role="status" tabindex="-1" hidden></div>
+          <div class="simulado-actions">
+            <button type="submit" class="btn btn-primary" id="simulado-submit">Finalizar simulado</button>
+            <button type="reset" class="btn btn-secondary">Refazer simulado</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <span class="footer-bracket">[</span>ISL<span class="footer-bracket">]</span>
+          </div>
+          <p class="footer-title">INTELLIGENT SYSTEMS LAB</p>
+          <p class="footer-sub">ARDUINO · ROBÓTICA · SENSORES IoT · INDÚSTRIA 4.0</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h4>Navegação</h4>
+            <ul>
+              <li><a href="#hero">Início</a></li>
+              <li><a href="#desafio01">Desafios Arduino</a></li>
+              <li><a href="#robos">Robótica Industrial</a></li>
+              <li><a href="#sensores-iot">Sensores IoT</a></li>
+              <li><a href="#simulado">Simulado</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>Redes Sociais</h4>
+            <div class="footer-socials">
+              <a href="https://github.com/SantiagoFidmay" target="_blank" title="GitHub" aria-label="GitHub">
+                <img src="img/github.png" alt="GitHub" width="24" height="24">
+              </a>
+              <a href="https://www.instagram.com/santiagofidmay/" target="_blank" title="Instagram" aria-label="Instagram">
+                <img src="img/instagram.png" alt="Instagram" width="24" height="24">
+              </a>
+              <a href="https://wa.me/5547992884187" target="_blank" title="WhatsApp" aria-label="WhatsApp">
+                <img src="img/whatsapp.png" alt="WhatsApp" width="24" height="24">
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-status">
+          <div class="fs-dot"></div>
+          <span>STATUS: PROJECT COMPLETED ✓</span>
+        </div>
+      </div>
+      <div class="footer-author">
+        <span class="footer-author-label">DESENVOLVIDO POR</span>
+        <span class="footer-author-name">Santiago Fidmay</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== BACK TO TOP ===================== -->
+  <button id="back-to-top" class="back-to-top" aria-label="Voltar ao topo da página" title="Voltar ao topo">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+      <path d="M10 16V4M10 4L5 9M10 4L15 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <button id="scroll-top-unified" aria-label="Voltar ao topo">↑</button>
+
+  <script src="js/script.js"></script>
+  <script src="js/simulado.js"></script>
+  <script src="js/robos.js"></script>
+</body>
+</html>
